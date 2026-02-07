@@ -1,0 +1,2 @@
+ALTER TABLE modules
+ADD COLUMN panel_height_u INTEGER NOT NULL DEFAULT 3;
