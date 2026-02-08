@@ -1,4 +1,6 @@
-package online.ritasilva.racknote.modules;
+package online.ritasilva.racknote.modules.api;
+
+import online.ritasilva.racknote.modules.repo.ModuleRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

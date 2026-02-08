@@ -1,4 +1,4 @@
-package online.ritasilva.racknote.modules;
+package online.ritasilva.racknote.modules.api;
 import java.util.UUID;
 
 public record ModuleResponse(

@@ -1,4 +1,4 @@
-package online.ritasilva.racknote.modules;
+package online.ritasilva.racknote.modules.domain;
 
 import jakarta.persistence.*;
 

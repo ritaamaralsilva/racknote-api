@@ -1,4 +1,6 @@
-package online.ritasilva.racknote.modules;
+package online.ritasilva.racknote.modules.repo;
+
+import online.ritasilva.racknote.modules.domain.ModuleEntity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
