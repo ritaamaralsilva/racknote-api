@@ -42,4 +42,8 @@ public class CaseRowEntity {
   public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
+
+  public UUID getCaseId() {
+    return rackCase.getId();
+  }
 }
