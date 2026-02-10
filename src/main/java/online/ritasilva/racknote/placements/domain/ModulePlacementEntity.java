@@ -9,6 +9,7 @@ import java.util.UUID;
 public class ModulePlacementEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   @Column(nullable = false, updatable = false)
   private UUID id;
 
@@ -32,9 +33,13 @@ public class ModulePlacementEntity {
     this.xHp = xHp;
   }
 
+  @PrePersist
+  void prePersist() {
+    if (createdAt == null) createdAt = OffsetDateTime.now();
+  }
+
   public UUID getId() { return id; }
   public UUID getCaseRowId() { return caseRowId; }
   public UUID getModuleId() { return moduleId; }
   public Integer getXHp() { return xHp; }
-  public OffsetDateTime getCreatedAt() { return createdAt; }
 }

@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
-
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -26,11 +24,8 @@ public class ModulePlacementController {
   @ResponseStatus(HttpStatus.CREATED)
   public PlacementResponse create(@Valid @RequestBody CreatePlacementRequest req) {
     try {
-      UUID caseRowId = Objects.requireNonNull(req.caseRowId(), "caseRowId is required");
-      UUID moduleId  = Objects.requireNonNull(req.moduleId(), "moduleId is required");
-
       ModulePlacementEntity saved =
-          placementService.create(caseRowId, moduleId, req.xHp());
+          placementService.create(req.caseRowId(), req.moduleId(), req.xHp());
 
       return new PlacementResponse(
           saved.getId(),
@@ -40,7 +35,21 @@ public class ModulePlacementController {
       );
 
     } catch (IllegalArgumentException e) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
     }
   }
+
+
+@DeleteMapping("/{placementId}")
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public void delete(@PathVariable UUID placementId) {
+  try {
+    placementService.delete(placementId);
+  } catch (IllegalArgumentException e) {
+    if ("Placement not found".equals(e.getMessage())) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+   throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+  }
+}
 }

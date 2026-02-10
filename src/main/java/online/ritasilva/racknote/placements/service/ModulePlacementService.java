@@ -10,7 +10,6 @@ import online.ritasilva.racknote.placements.domain.ModulePlacementEntity;
 import online.ritasilva.racknote.placements.repo.ModulePlacementRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,12 +34,24 @@ public class ModulePlacementService {
     this.caseRepository = caseRepository;
     this.moduleRepository = moduleRepository;
   }
-  @Transactional
-    public ModulePlacementEntity create(@NonNull UUID caseRowId, @NonNull UUID moduleId, int xHp) {
 
+  @Transactional
+  public void delete(UUID placementId) {
+    if (placementId == null) {
+      throw new IllegalArgumentException("placementId is required");    
+    }
+    if (!placementRepository.existsById(placementId)) {
+      throw new IllegalArgumentException("Placement not found");
+    }
+
+    placementRepository.deleteById(placementId);
+  }
+
+  @Transactional
+  public ModulePlacementEntity create(UUID caseRowId, UUID moduleId, int xHp) {
     Objects.requireNonNull(caseRowId, "caseRowId is required");
     Objects.requireNonNull(moduleId, "moduleId is required");
-    // API layer validates nulls; keep this guard anyway (domain invariant)
+
     if (xHp <= 0) {
       throw new IllegalArgumentException("xHp must be > 0");
     }
