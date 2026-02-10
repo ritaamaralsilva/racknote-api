@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
 import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/placements", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,6 +40,23 @@ public class ModulePlacementController {
     }
   }
 
+  @GetMapping
+  public List<PlacementResponse> list(@RequestParam(name = "caseRowId") UUID caseRowId) {
+    try {
+      List<ModulePlacementEntity> placements = placementService.listByCaseRowId(caseRowId);
+
+      return placements.stream()
+          .map(p -> new PlacementResponse(p.getId(), p.getCaseRowId(), p.getModuleId(), p.getXHp()))
+          .toList();
+
+    } catch (IllegalArgumentException e) {
+      if ("Case row not found".equals(e.getMessage())) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+      }
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+    }
+  }
+
 
 @DeleteMapping("/{placementId}")
 @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -50,6 +68,6 @@ public void delete(@PathVariable UUID placementId) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
     }
    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
   }
-}
 }

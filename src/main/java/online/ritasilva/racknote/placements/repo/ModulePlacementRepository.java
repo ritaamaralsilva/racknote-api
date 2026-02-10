@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface ModulePlacementRepository extends JpaRepository<ModulePlacementEntity, UUID> {
-    @Query("select p from ModulePlacementEntity p where p.caseRowId = :caseRowId order by p.xHp asc")
-  List<ModulePlacementEntity> findByCaseRowIdOrdered (@Param ("caseRowId") UUID caseRowId);
+public interface ModulePlacementRepository
+extends JpaRepository<ModulePlacementEntity, UUID> {
+  @Query("select p from ModulePlacementEntity p where p.caseRowId = :caseRowId order by p.xHp asc")
+  List<ModulePlacementEntity> findByCaseRowIdOrdered (@Param("caseRowId") UUID caseRowId);
 }

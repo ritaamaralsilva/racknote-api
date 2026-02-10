@@ -35,17 +35,21 @@ public class ModulePlacementService {
     this.moduleRepository = moduleRepository;
   }
 
-  @Transactional
-  public void delete(UUID placementId) {
-    if (placementId == null) {
-      throw new IllegalArgumentException("placementId is required");    
-    }
-    if (!placementRepository.existsById(placementId)) {
-      throw new IllegalArgumentException("Placement not found");
+  // READ (GET placements) vvv
+
+  @Transactional(readOnly = true)
+  public List<ModulePlacementEntity> listByCaseRowId(UUID caseRowId) {
+    Objects.requireNonNull(caseRowId, "caseRowId is required");
+
+    if (!caseRowRepository.existsById(caseRowId)) {
+      throw new IllegalArgumentException("Case row not found");
     }
 
-    placementRepository.deleteById(placementId);
+    return placementRepository.findByCaseRowIdOrdered(caseRowId);
   }
+
+
+  // CREATE (POST placement) vvv
 
   @Transactional
   public ModulePlacementEntity create(UUID caseRowId, UUID moduleId, int xHp) {
@@ -103,5 +107,19 @@ ModuleEntity placedModule = moduleRepository.findById(placedModuleId)
     }
 
     return placementRepository.save(new ModulePlacementEntity(caseRowId, moduleId, xHp));
+  }
+
+// DELETE (DELETE placement) vvv
+
+@Transactional
+public void delete(UUID placementId) {
+  if (placementId == null) {
+    throw new IllegalArgumentException("placementId is required");    
+  }
+  if (!placementRepository.existsById(placementId)) {
+    throw new IllegalArgumentException("Placement not found");
+  }
+
+  placementRepository.deleteById(placementId);
   }
 }
