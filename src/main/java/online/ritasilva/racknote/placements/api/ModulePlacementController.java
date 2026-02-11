@@ -70,4 +70,37 @@ public void delete(@PathVariable UUID placementId) {
    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
   }
+
+@PatchMapping(value = "/{placementId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+public PlacementResponse update(
+    @PathVariable UUID placementId,
+    @Valid @RequestBody UpdatePlacementRequest req
+) {
+  if (req == null || req.isEmpty()) {
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nothing to update");
+  }
+
+  try {
+    ModulePlacementEntity updated =
+        placementService.updatePosition(placementId, req.caseRowId(), req.xHp());
+
+    return new PlacementResponse(
+        updated.getId(),
+        updated.getCaseRowId(),
+        updated.getModuleId(),
+        updated.getXHp()
+    );
+
+  } catch (IllegalArgumentException e) {
+    // service uses IllegalArgumentException for client errors (bad request / not found)
+    if ("Placement not found".equals(e.getMessage())) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    }
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+
+  } catch (IllegalStateException e) {
+    // service uses IllegalStateException for referential/data integrity problems
+    throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
+  }
+}
 }
